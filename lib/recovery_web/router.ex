@@ -18,6 +18,10 @@ defmodule RecoveryWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    live "/todos", TodoLive.Index, :index
+    live "/todos/new", TodoLive.Index, :new
+    live "/todos/edit", TodoLive.Index, :edit
+    live "/todos/:id", TodoLive.Show, :show
   end
 
   # Other scopes may use custom stacks.
