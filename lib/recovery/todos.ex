@@ -19,7 +19,7 @@ defmodule Recovery.Todos do
   """
   def list_todos do
     Repo.all(Todo)
-    |> Enum.sort_by(& &1.id)
+    |> Enum.shuffle()
   end
 
   @doc """

@@ -11,7 +11,7 @@
 
 
 <%= for todo <- @todos do %>
-  <%= if @editing == todo.id do %>
+  <%= if todo.id in @editing do %>
   <%= live_component @socket, RecoveryWeb.TodoLive.TodoComponent, id: todo.id, todo: todo, action: :edit, return_to: Routes.todo_index_path(@socket, :index) %>
   <% else %>
   <div phx-click="edit" phx-value-id={todo.id}><%= todo.text %></div>

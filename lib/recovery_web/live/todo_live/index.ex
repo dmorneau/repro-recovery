@@ -8,7 +8,7 @@ defmodule RecoveryWeb.TodoLive.Index do
   def mount(_params, _session, socket) do
     socket =
       socket
-      |> assign(:editing, nil)
+      |> assign(:editing, [])
       |> assign(:todos, list_todos())
 
     {:ok, socket}
@@ -16,6 +16,20 @@ defmodule RecoveryWeb.TodoLive.Index do
 
   @impl true
   def handle_params(params, _url, socket) do
+    socket =
+      case params["editing"] do
+        nil ->
+          assign(socket, :editing, [])
+
+        list ->
+          ids =
+            list
+            |> Enum.map(&String.to_integer/1)
+            |> Enum.uniq
+
+          assign(socket, :editing, ids)
+      end
+
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
@@ -46,13 +60,14 @@ defmodule RecoveryWeb.TodoLive.Index do
   end
 
   def handle_event("edit", %{"id" => id}, socket) do
-    id = String.to_integer(id)
-    {:noreply, assign(socket, :editing, id)}
+    editing = [id | socket.assigns.editing]
+    {:noreply, push_patch(socket, to: Routes.todo_index_path(socket, :index, editing: editing))}
   end
 
   @impl true
-  def handle_info({:stop_editing, _id}, socket) do
-    {:moreply, assign(socket, :editing, nil)}
+  def handle_info({:stop_editing, id}, socket) do
+    editing = socket.assigns.editing -- [String.to_integer(id)]
+    {:noreply, push_patch(socket, to: Routes.todo_index_path(socket, :index, editing: editing))}
   end
 
   defp list_todos do
