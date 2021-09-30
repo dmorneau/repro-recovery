@@ -6,7 +6,12 @@ defmodule RecoveryWeb.TodoLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :todos, list_todos())}
+    socket =
+      socket
+      |> assign(:editing, nil)
+      |> assign(:todos, list_todos())
+
+    {:ok, socket}
   end
 
   @impl true
@@ -38,6 +43,16 @@ defmodule RecoveryWeb.TodoLive.Index do
     {:ok, _} = Todos.delete_todo(todo)
 
     {:noreply, assign(socket, :todos, list_todos())}
+  end
+
+  def handle_event("edit", %{"id" => id}, socket) do
+    id = String.to_integer(id)
+    {:noreply, assign(socket, :editing, id)}
+  end
+
+  @impl true
+  def handle_info({:stop_editing, _id}, socket) do
+    {:moreply, assign(socket, :editing, nil)}
   end
 
   defp list_todos do
