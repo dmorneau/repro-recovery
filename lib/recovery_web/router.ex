@@ -17,7 +17,7 @@ defmodule RecoveryWeb.Router do
   scope "/", RecoveryWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", TodoLive.Index, :index
     live "/todos", TodoLive.Index, :index
     live "/todos/new", TodoLive.Index, :new
     live "/todos/edit", TodoLive.Index, :edit
