@@ -1,3 +1,8 @@
 <div>
-  <%= live_component @socket, RecoveryWeb.TodoLive.FormComponent, id: "form-#{@id}", title: "Edit todo", changeset: @changeset, target: @myself %>
+  <.live_component module={RecoveryWeb.TodoLive.FormComponent}
+    id={"form-#{@id}"}
+    title="Edit todo"
+    changeset={@changeset}
+    target={@myself}
+  />
 </div>
